@@ -6,7 +6,7 @@ from Backend.API.app import create_app
 from Backend.Servicios.conciliacion_service import ReconciliationResult
 
 
-FRONTEND_HTML_PATH = Path(__file__).resolve().parents[1] / "Frontend" / "Diseño_mvp.html"
+FRONTEND_HTML_PATH = Path(__file__).resolve().parents[1] / "Frontend" / "mvp.html"
 
 
 def pdf_file(name):
@@ -37,12 +37,18 @@ def test_root_html_exposes_static_frontend_contract_seams(tmp_path):
     html = response.text
 
     assert response.status_code == 200
-    assert 'id="bank-password"' in html
+    assert 'id="upload-banco-input"' in html
+    assert 'id="upload-empresa-input"' in html
+    assert 'accept=".pdf,application/pdf"' in html
+    assert 'id="password-banco"' in html
     assert 'id="bank-type"' in html
     assert 'value="nequi"' in html
     assert 'value="agrario"' in html
     assert 'type="password"' in html
     assert 'id="submit-reconciliation"' in html
+    assert 'disabled id="submit-reconciliation"' in html
+    assert 'disabled id="erp-source"' in html
+    assert 'disabled id="password-empresa"' in html
     assert 'id="status-message"' in html
     assert 'id="error-message"' in html
     assert 'id="download-link"' in html
@@ -53,6 +59,9 @@ def test_root_html_exposes_static_frontend_contract_seams(tmp_path):
     assert "formData.append('password_banco'" in html
     assert "download_url" in html
     assert "updateSubmitState()" in html
+    assert "simulateReconciliation" not in html
+    assert "1,452 transacciones" not in html
+    assert "alert(" not in html
 
 
 def test_post_reconciliation_returns_metadata_and_forwards_primary_password_field(tmp_path):

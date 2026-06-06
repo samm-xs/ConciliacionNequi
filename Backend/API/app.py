@@ -8,7 +8,7 @@ from fastapi.responses import JSONResponse
 from Backend.Servicios.conciliacion_service import run_reconciliation
 
 
-FRONTEND_HTML_PATH = Path(__file__).resolve().parents[2] / "Frontend" / "Diseño_mvp.html"
+FRONTEND_HTML_PATH = Path(__file__).resolve().parents[2] / "Frontend" / "mvp.html"
 
 
 def create_app(output_dir=None, reconciliation_runner=run_reconciliation):

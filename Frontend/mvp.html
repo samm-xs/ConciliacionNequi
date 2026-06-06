@@ -1,0 +1,404 @@
+<!DOCTYPE html><html class="" lang="es"><head>
+<meta charset="utf-8">
+<meta content="width=device-width, initial-scale=1.0" name="viewport">
+<title>Reconciliación Pro | Terminal de Precisión</title>
+<script src="https://cdn.tailwindcss.com?plugins=forms,container-queries"></script>
+<link href="https://fonts.googleapis.com/css2?family=Hanken+Grotesk:wght@400;500;600;700&amp;display=swap" rel="stylesheet">
+<link href="https://fonts.googleapis.com/css2?family=Material+Symbols+Outlined:wght,FILL@100..700,0..1&amp;display=swap" rel="stylesheet">
+<style>
+        body {
+            background-color: #0c0e10;
+            color: #e2e2e5;
+            -webkit-font-smoothing: antialiased;
+            transition: background-color 0.3s ease, color 0.3s ease;
+        }
+        html:not(.dark) body {
+            background-color: #f8fafc;
+            color: #1e293b;
+        }
+        .grid-pattern {
+            background-image: radial-gradient(circle at 1px 1px, rgba(33, 115, 70, 0.1) 1px, transparent 0);
+            background-size: 32px 32px;
+        }
+        .neon-glow-border {
+            box-shadow: 0 0 15px rgba(16, 124, 16, 0.3);
+            border: 1px solid rgba(16, 124, 16, 0.5);
+        }
+        .glass-header {
+            backdrop-filter: blur(20px);
+            -webkit-backdrop-filter: blur(20px);
+        }
+        .material-symbols-outlined {
+            font-variation-settings: 'FILL' 0, 'wght' 400, 'GRAD' 0, 'opsz' 24;
+        }
+        .upload-dashed {
+            background-image: url("data:image/svg+xml,%3csvg width='100%25' height='100%25' xmlns='http://www.w3.org/2000/svg'%3e%3crect width='100%25' height='100%25' fill='none' rx='8' ry='8' stroke='%231a5b37' stroke-width='2' stroke-dasharray='8%2c 12' stroke-dashoffset='0' stroke-linecap='square'/%3e%3c/svg%3e");
+        }
+    </style>
+<script id="tailwind-config">
+        tailwind.config = {
+          darkMode: "class",
+          theme: {
+            extend: {
+              "colors": {
+                      "on-surface": "#e2e2e5",
+                      "surface-charcoal": "#111415",
+                      "primary-fixed": "#94fa81",
+                      "surface-obsidian": "#0c0e10",
+                      "outline-variant": "#3f4a3b",
+                      "surface-container": "#1e2021",
+                      "primary-container": "#107c10",
+                      "on-primary": "#003a01",
+                      "excel-muted": "#1a5b37",
+                      "primary": "#79dd68",
+                      "secondary-container": "#005f35",
+                      "neon-glow": "rgba(16, 124, 16, 0.4)",
+                      "error-red": "#ffb4ab",
+                      "surface-container-low": "#1a1c1e",
+                      "on-primary-container": "#b5ffa2",
+              },
+              "borderRadius": {
+                      "DEFAULT": "0.25rem",
+                      "lg": "0.5rem",
+                      "xl": "0.75rem",
+                      "full": "9999px"
+              },
+              "spacing": {
+                      "margin-mobile": "16px",
+                      "unit": "8px",
+                      "section-gap": "48px",
+                      "gutter": "24px",
+                      "container-max": "1440px",
+                      "margin-desktop": "64px"
+              },
+              "fontFamily": {
+                      "body-md": ["Hanken Grotesk"],
+                      "headline-md": ["Hanken Grotesk"],
+                      "mono-label": ["Hanken Grotesk"],
+                      "label-md": ["Hanken Grotesk"],
+                      "display": ["Hanken Grotesk"]
+              },
+              "fontSize": {
+                      "body-md": ["16px", {"lineHeight": "24px", "fontWeight": "400"}],
+                      "headline-md": ["32px", {"lineHeight": "40px", "fontWeight": "500"}],
+                      "mono-label": ["12px", {"lineHeight": "16px", "letterSpacing": "0.1em", "fontWeight": "500"}],
+                      "label-md": ["14px", {"lineHeight": "20px", "letterSpacing": "0.05em", "fontWeight": "600"}],
+                      "display": ["72px", {"lineHeight": "80px", "letterSpacing": "-0.02em", "fontWeight": "700"}]
+              }
+            },
+          },
+        }
+    </script>
+<style>
+        @keyframes shimmer {
+            0% { transform: translateX(-100%); }
+            100% { transform: translateX(100%); }
+        }
+    </style>
+</head>
+<body class="grid-pattern min-h-screen flex flex-col">
+<script>
+        if (localStorage.getItem('theme') === 'light') {
+            document.documentElement.classList.remove('dark');
+            document.body.classList.remove('dark');
+        } else {
+            document.documentElement.classList.add('dark');
+            document.body.classList.add('dark');
+        }
+    </script>
+<!-- TopAppBar -->
+<header class="bg-white/80 dark:bg-surface-charcoal/80 backdrop-blur-xl border-b border-slate-200 dark:border-outline-variant/20 shadow-sm docked full-width top-0 sticky z-50 transition-colors duration-300">
+<div class="flex justify-between items-center w-full px-margin-desktop py-4 max-w-container-max mx-auto">
+<div class="flex items-center gap-8">
+<span class="font-display text-headline-md text-primary dark:text-primary tracking-tighter">Reconciliación Pro</span>
+<nav class="hidden md:flex items-center gap-6"><a class="text-primary font-bold border-b-2 border-primary pb-1 font-label-md text-label-md" href="#">Conciliar</a><a class="text-slate-500 dark:text-on-surface-variant font-medium hover:text-primary transition-colors duration-200 font-label-md text-label-md" href="#">Historial</a></nav>
+</div>
+<div class="flex items-center gap-4">
+<button class="p-2 rounded-full hover:bg-slate-100 dark:hover:bg-white/10 text-slate-600 dark:text-on-surface-variant transition-all duration-300 flex items-center justify-center" id="theme-toggle">
+<span class="material-symbols-outlined" id="theme-toggle-icon">light_mode</span>
+</button>
+<div class="w-8 h-8 rounded-full overflow-hidden border border-slate-200 dark:border-outline-variant">
+<img alt="Avatar del usuario" class="w-full h-full object-cover" src="https://lh3.googleusercontent.com/aida/AP1WRLukbYLEkEgb4UQOli-itSDE9O3l1BSWnhgK-JPg3emxtBUheyUkDUOLvvbvP2H2IhrIyfQG-arFrds95FpIkKcBQk4S9Ml3csBgRJW8dK13IdXXJVjBHJyMtLJHxpBJvA-PzI-N1KRpx3u_zQ51-ljm73QY05aOxvlntXjYJ4CIAqzGskhVC4K_7ilg5p9hpc5HrunBxPv3nU1ZdRZGqkM9-2213xkMF1_XWHDEcQ2t3HqVbAd7MKHhuhce">
+</div>
+</div>
+</div>
+</header>
+<main class="flex-grow flex flex-col items-center justify-center px-margin-mobile md:px-margin-desktop py-12">
+<!-- Welcome Section -->
+<div class="text-center mb-12 max-w-2xl">
+<h1 class="font-headline-md text-headline-md text-slate-900 dark:text-on-surface mb-2">Reconciliación de Libros</h1>
+<p class="font-body-md text-body-md text-slate-600 dark:text-on-surface-variant">Cargue sus archivos financieros para iniciar el proceso de emparejamiento inteligente.</p>
+</div>
+<!-- Split View Container -->
+<div class="grid grid-cols-1 md:grid-cols-2 gap-gutter w-full max-w-container-max mb-section-gap relative">
+<!-- Left Card: Banco -->
+<section class="bg-slate-100 dark:bg-surface-charcoal border border-slate-300 dark:border-outline-variant/30 rounded-xl p-8 flex flex-col gap-6 transition-all duration-300 hover:border-primary/40 group neon-glow-border shadow-sm dark:shadow-none" id="panel-banco">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-green-200 dark:bg-secondary-container flex items-center justify-center text-green-800 dark:text-primary">
+<span class="material-symbols-outlined">account_balance</span>
+</div>
+<h2 class="font-headline-md text-[24px] text-slate-900 dark:text-on-surface">Banco</h2>
+</div>
+<span class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant bg-slate-200 dark:bg-surface-container px-2 py-1 rounded">EXTRACTO BANCARIO</span>
+</div>
+<div class="space-y-4">
+<label class="block">
+<span class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant mb-2 block uppercase">Proveedor Bancario</span>
+<select class="w-full bg-white dark:bg-surface-container border border-slate-300 dark:border-outline-variant/50 rounded-lg px-4 py-3 text-slate-900 dark:text-on-surface focus:ring-1 focus:ring-primary focus:border-primary outline-none appearance-none" id="bank-type">
+<option value="nequi">Nequi</option>
+<option value="agrario">Banco Agrario</option>
+</select>
+</label>
+<input accept=".pdf,application/pdf" class="hidden" id="upload-banco-input" type="file">
+<label class="rounded-xl h-48 flex flex-col items-center justify-center cursor-pointer hover:bg-green-100 dark:hover:bg-excel-muted/5 transition-all group/upload bg-green-50 dark:bg-secondary-container/20 border-2 border-primary neon-glow-border" for="upload-banco-input" id="upload-banco">
+<span class="material-symbols-outlined text-[48px] text-primary" id="upload-banco-icon">upload_file</span>
+<p class="font-label-md text-label-md text-green-800 dark:text-primary mt-2" id="upload-banco-status">Seleccionar extracto bancario</p>
+<p class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant mt-1" id="upload-banco-name">SOLO ARCHIVOS PDF</p>
+</label>
+<div class="relative">
+<span class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant mb-2 block uppercase">Contraseña del Archivo (Si aplica)</span>
+<div class="relative">
+<input class="w-full bg-white dark:bg-surface-container border border-slate-300 dark:border-outline-variant/50 rounded-lg px-4 py-3 text-slate-900 dark:text-on-surface focus:ring-1 focus:ring-primary outline-none" id="password-banco" placeholder="••••••••" type="password">
+<button class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-on-surface-variant hover:text-slate-900 dark:hover:text-on-surface" onclick="togglePassword('password-banco', this)">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Right Card: Empresa -->
+<section class="bg-slate-100 dark:bg-surface-charcoal border border-slate-300 dark:border-outline-variant/30 rounded-xl p-8 flex flex-col gap-6 transition-all duration-300 hover:border-primary/40 group neon-glow-border shadow-sm dark:shadow-none" id="panel-empresa">
+<div class="flex items-center justify-between">
+<div class="flex items-center gap-3">
+<div class="w-10 h-10 rounded-lg bg-green-200 dark:bg-primary-container flex items-center justify-center text-green-800 dark:text-on-primary-container">
+<span class="material-symbols-outlined">corporate_fare</span>
+</div>
+<h2 class="font-headline-md text-[24px] text-slate-900 dark:text-on-surface">Empresa</h2>
+</div>
+<span class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant bg-slate-200 dark:bg-surface-container px-2 py-1 rounded">LIBRO AUXILIAR</span>
+</div>
+<div class="space-y-4">
+<label class="block">
+<span class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant mb-2 block uppercase">Origen de Datos</span>
+<select class="w-full bg-slate-200 dark:bg-surface-container/70 border border-slate-300 dark:border-outline-variant/50 rounded-lg px-4 py-3 text-slate-500 dark:text-on-surface-variant outline-none appearance-none cursor-not-allowed" disabled id="erp-source">
+<option selected>Formato Vergel</option>
+<option disabled>ERP Interno (SAP/Oracle)</option>
+<option disabled>Excel Consolidado</option>
+<option disabled>QuickBooks Sync</option>
+</select>
+</label>
+<input accept=".pdf,application/pdf" class="hidden" id="upload-empresa-input" type="file">
+<label class="rounded-xl h-48 flex flex-col items-center justify-center cursor-pointer hover:bg-green-100 dark:hover:bg-excel-muted/5 transition-all group/upload bg-green-50 dark:bg-secondary-container/20 border-2 border-primary neon-glow-border" for="upload-empresa-input" id="upload-empresa">
+<span class="material-symbols-outlined text-[48px] text-primary" id="upload-empresa-icon">upload_file</span>
+<p class="font-label-md text-label-md text-green-800 dark:text-primary mt-2" id="upload-empresa-status">Seleccionar libro auxiliar</p>
+<p class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant mt-1" id="upload-empresa-name">SOLO ARCHIVOS PDF</p>
+</label>
+<div class="relative">
+<span class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant mb-2 block uppercase">Contraseña del Archivo (Si aplica)</span>
+<div class="relative">
+<input class="w-full bg-slate-200 dark:bg-surface-container/70 border border-slate-300 dark:border-outline-variant/50 rounded-lg px-4 py-3 text-slate-500 dark:text-on-surface-variant outline-none cursor-not-allowed" disabled id="password-empresa" placeholder="Próximamente" type="password">
+<button aria-label="Mostrar contraseña de empresa" class="absolute right-3 top-1/2 -translate-y-1/2 text-slate-400 dark:text-on-surface-variant cursor-not-allowed" disabled type="button">
+<span class="material-symbols-outlined text-[20px]">visibility</span>
+</button>
+</div>
+</div>
+</div>
+</section>
+<!-- Central Connector Effect -->
+<div class="absolute left-1/2 top-1/2 -translate-x-1/2 -translate-y-1/2 hidden md:block pointer-events-none">
+<div class="w-12 h-12 rounded-full bg-white dark:bg-surface-obsidian border border-slate-300 dark:border-outline-variant/30 flex items-center justify-center shadow-lg dark:shadow-2xl">
+<span class="material-symbols-outlined text-excel-muted dark:text-primary animate-pulse">sync_alt</span>
+</div>
+</div>
+</div>
+<!-- Action Zone -->
+<div class="flex flex-col items-center gap-6">
+<button class="group relative px-12 py-5 bg-primary-container text-white dark:text-on-primary-container rounded-full font-label-md text-[18px] uppercase tracking-wider transition-all duration-300 enabled:hover:scale-105 enabled:active:scale-95 shadow-[0_0_20px_rgba(16,124,16,0.3)] enabled:hover:shadow-[0_0_40px_rgba(16,124,16,0.5)] flex items-center gap-3 overflow-hidden disabled:cursor-not-allowed disabled:opacity-50" disabled id="submit-reconciliation" type="button">
+<div class="absolute inset-0 bg-gradient-to-r from-transparent via-white/10 to-transparent -translate-x-full group-hover:animate-[shimmer_1.5s_infinite]"></div>
+<span class="material-symbols-outlined" style="font-variation-settings: 'FILL' 1;">bolt</span>
+                Conciliar ahora
+            </button>
+<div aria-live="polite" class="hidden w-full max-w-xl rounded-xl border px-5 py-4 text-center" id="status-message"></div>
+<div aria-live="assertive" class="hidden w-full max-w-xl rounded-xl border border-red-300 bg-red-50 px-5 py-4 text-center text-red-700 dark:border-red-900 dark:bg-red-950/30 dark:text-error-red" id="error-message" role="alert"></div>
+<a class="hidden items-center justify-center gap-2 rounded-full border border-primary px-8 py-3 font-label-md text-label-md uppercase tracking-wider text-primary transition-colors hover:bg-primary/10" download id="download-link" rel="noopener">
+<span class="material-symbols-outlined">download</span>
+                Descargar Excel
+            </a>
+</div>
+</main>
+<!-- Footer -->
+<footer class="bg-slate-100 dark:bg-surface-obsidian border-t border-slate-200 dark:border-outline-variant/10 full-width py-unit mt-12 transition-colors duration-300">
+<div class="flex flex-col md:flex-row justify-between items-center px-margin-desktop w-full max-w-container-max mx-auto py-6">
+<div class="flex items-center gap-4 mb-4 md:mb-0">
+<span class="font-display text-body-lg text-slate-900 dark:text-on-surface">Reconciliación Pro</span>
+<span class="text-slate-300 dark:text-on-surface-variant/30">|</span>
+<p class="font-body-md text-body-md text-slate-500 dark:text-on-surface-variant opacity-70">© 2024 Reconciliación Pro. Todos los derechos reservados.</p>
+</div>
+<div class="flex gap-8">
+<a class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant hover:text-primary transition-opacity duration-300" href="#">Soporte</a>
+<a class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant hover:text-primary transition-opacity duration-300" href="#">Términos</a>
+<a class="font-mono-label text-mono-label text-slate-500 dark:text-on-surface-variant hover:text-primary transition-opacity duration-300" href="#">Privacidad</a>
+</div>
+</div>
+</footer>
+<script>
+        const themeToggleBtn = document.getElementById('theme-toggle');
+        const themeToggleIcon = document.getElementById('theme-toggle-icon');
+
+        function updateThemeIcon() {
+            if (document.documentElement.classList.contains('dark')) {
+                themeToggleIcon.textContent = 'light_mode';
+            } else {
+                themeToggleIcon.textContent = 'dark_mode';
+            }
+        }
+
+        updateThemeIcon();
+
+        themeToggleBtn.addEventListener('click', () => {
+            const isDark = document.documentElement.classList.toggle('dark');
+            document.body.classList.toggle('dark');
+            localStorage.setItem('theme', isDark ? 'dark' : 'light');
+            updateThemeIcon();
+        });
+
+        function togglePassword(inputId, button) {
+            const input = document.getElementById(inputId);
+            const icon = button.querySelector('.material-symbols-outlined');
+            if (input.type === 'password') {
+                input.type = 'text';
+                icon.textContent = 'visibility_off';
+            } else {
+                input.type = 'password';
+                icon.textContent = 'visibility';
+            }
+        }
+
+        const DEFAULT_UPLOAD_LABEL = 'SOLO ARCHIVOS PDF';
+        const submitButton = document.getElementById('submit-reconciliation');
+        const bankInput = document.getElementById('upload-banco-input');
+        const erpInput = document.getElementById('upload-empresa-input');
+        const bankTypeInput = document.getElementById('bank-type');
+        const bankPasswordInput = document.getElementById('password-banco');
+        const statusMessage = document.getElementById('status-message');
+        const errorMessage = document.getElementById('error-message');
+        const downloadLink = document.getElementById('download-link');
+        const submitButtonContent = submitButton.innerHTML;
+        let isSubmitting = false;
+
+        function setVisible(element, visible) {
+            element.classList.toggle('hidden', !visible);
+        }
+
+        function resetFeedback() {
+            statusMessage.textContent = '';
+            errorMessage.textContent = '';
+            downloadLink.removeAttribute('href');
+            setVisible(statusMessage, false);
+            setVisible(errorMessage, false);
+            setVisible(downloadLink, false);
+            downloadLink.classList.remove('inline-flex');
+        }
+
+        function updateUploadState(input, prefix, selectedLabel) {
+            const file = input.files[0];
+            const icon = document.getElementById(`${prefix}-icon`);
+            const status = document.getElementById(`${prefix}-status`);
+            const name = document.getElementById(`${prefix}-name`);
+
+            icon.textContent = file ? 'check_circle' : 'upload_file';
+            status.textContent = file ? 'Archivo seleccionado' : selectedLabel;
+            name.textContent = file ? file.name : DEFAULT_UPLOAD_LABEL;
+        }
+
+        function updateSubmitState() {
+            const hasFiles = Boolean(bankInput.files[0] && erpInput.files[0]);
+            submitButton.disabled = isSubmitting || !hasFiles;
+            return hasFiles;
+        }
+
+        function setFormDisabled(disabled) {
+            bankInput.disabled = disabled;
+            erpInput.disabled = disabled;
+            bankTypeInput.disabled = disabled;
+            bankPasswordInput.disabled = disabled;
+        }
+
+        bankInput.addEventListener('change', () => {
+            resetFeedback();
+            updateUploadState(bankInput, 'upload-banco', 'Seleccionar extracto bancario');
+            updateSubmitState();
+        });
+
+        erpInput.addEventListener('change', () => {
+            resetFeedback();
+            updateUploadState(erpInput, 'upload-empresa', 'Seleccionar libro auxiliar');
+            updateSubmitState();
+        });
+
+        async function submitReconciliation() {
+            if (isSubmitting || !updateSubmitState()) {
+                return;
+            }
+
+            resetFeedback();
+            isSubmitting = true;
+            setFormDisabled(true);
+            submitButton.disabled = true;
+            submitButton.innerHTML = `
+                <svg class="h-5 w-5 animate-spin" xmlns="http://www.w3.org/2000/svg" fill="none" viewBox="0 0 24 24">
+                    <circle class="opacity-25" cx="12" cy="12" r="10" stroke="currentColor" stroke-width="4"></circle>
+                    <path class="opacity-75" fill="currentColor" d="M4 12a8 8 0 018-8V0C5.373 0 0 5.373 0 12h4zm2 5.291A7.962 7.962 0 014 12H0c0 3.042 1.135 5.824 3 7.938l3-2.647z"></path>
+                </svg>
+                Procesando libros...
+            `;
+            statusMessage.textContent = 'Procesando archivos y generando la conciliación...';
+            statusMessage.className = 'w-full max-w-xl rounded-xl border border-primary/40 bg-primary/10 px-5 py-4 text-center text-green-800 dark:text-primary';
+
+            const formData = new FormData();
+            formData.append('erp_pdf', erpInput.files[0]);
+            formData.append('bank_pdf', bankInput.files[0]);
+            formData.append('bank_type', bankTypeInput.value);
+            formData.append('password_banco', bankPasswordInput.value);
+
+            try {
+                const response = await fetch('/api/reconciliations', {
+                    method: 'POST',
+                    body: formData
+                });
+                const payload = await response.json();
+
+                if (!response.ok) {
+                    throw new Error(payload.detail || 'No se pudo completar la conciliación.');
+                }
+
+                if (!payload.download_url) {
+                    throw new Error('La API no devolvió el enlace de descarga del Excel.');
+                }
+
+                statusMessage.textContent = 'Conciliación completada. El archivo está listo para descargar.';
+                downloadLink.href = payload.download_url;
+                downloadLink.classList.remove('hidden');
+                downloadLink.classList.add('inline-flex');
+            } catch (error) {
+                setVisible(statusMessage, false);
+                errorMessage.textContent = error.message || 'Ocurrió un error inesperado durante la conciliación.';
+                setVisible(errorMessage, true);
+                downloadLink.removeAttribute('href');
+                setVisible(downloadLink, false);
+                downloadLink.classList.remove('inline-flex');
+            } finally {
+                isSubmitting = false;
+                setFormDisabled(false);
+                submitButton.innerHTML = submitButtonContent;
+                updateSubmitState();
+            }
+        }
+
+        submitButton.addEventListener('click', submitReconciliation);
+        updateSubmitState();
+    </script>
+
+
+</body></html>
