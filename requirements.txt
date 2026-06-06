@@ -1,0 +1,9 @@
+pandas
+pdfplumber
+openpyxl
+tabulate
+fastapi
+uvicorn
+python-multipart
+pytest
+httpx

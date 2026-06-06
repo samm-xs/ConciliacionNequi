@@ -1,0 +1,80 @@
+schema: spec-driven
+project: conciliacion_bancaria_copia
+persistence: openspec
+strict_tdd: true
+
+context: |
+  Local Python 3.12 reconciliation MVP with a backend-style pipeline in main.py.
+  Pipeline: extract ERP PDF, extract bank PDF, normalize both, separate bank-only concepts, reconcile, detect compounds, export Excel.
+  Current backend modules live under Backend/; frontend artifact exists under Frontend/ but is out of scope for backend init.
+  Tests use pytest and cover reconciliation engines, Nequi normalization, and Excel export behavior.
+  No package metadata, CI config, linter, formatter, type-checker, or coverage config was detected.
+
+testing:
+  strict_tdd: true
+  detected: 2026-06-02
+  runner:
+    framework: pytest
+    command: python -m pytest -q
+    collect_command: python -m pytest --collect-only -q
+    collected_tests: 49
+    last_verified: "49 passed in 8.07s"
+  layers:
+    unit:
+      available: true
+      tool: pytest
+      scope: Backend modules and pure DataFrame transformations
+    integration:
+      available: false
+      tool: null
+      scope: No dedicated integration test tool or API boundary detected
+    e2e:
+      available: false
+      tool: null
+      scope: No E2E runner detected
+  coverage:
+    available: false
+    command: null
+  quality:
+    linter:
+      available: false
+      command: null
+    type_checker:
+      available: false
+      command: null
+    formatter:
+      available: false
+      command: null
+
+rules:
+  global:
+    - Do not touch frontend implementation during backend SDD phases unless explicitly requested.
+    - Do not change existing reconciliation logic during init, proposal, or exploration phases.
+    - Treat PDFs as local inputs; future backend work must accept two PDF paths/files and a bank PDF password parameter.
+  proposal:
+    - Keep Phase 1 backend scope focused on preparing the local MVP pipeline for frontend connection later.
+    - Include rollback notes for changes to extraction, orchestration, or exported output contracts.
+  specs:
+    - Use RFC 2119 keywords and Given/When/Then scenarios.
+    - Specify behavior for receiving ERP PDF, receiving bank PDF, passing bank PDF password, and returning/exporting reconciliation results.
+  design:
+    - Preserve existing extraction, normalization, reconciliation, compound detection, and export modules unless the design explicitly justifies a boundary change.
+    - Document how the orchestration boundary will become frontend-callable without implementing frontend code.
+  tasks:
+    - Group tasks by backend boundary, PDF input handling, password handling, pipeline orchestration, tests, and frontend-readiness contract.
+    - Keep each task small enough for one focused implementation session.
+  apply:
+    tdd: true
+    test_command: python -m pytest -q
+    notes:
+      - Start with or update pytest coverage for changed backend behavior before implementation.
+      - Avoid broad rewrites of reconciliation engines; prefer adapters/orchestration seams.
+  verify:
+    test_command: python -m pytest -q
+    build_command: ""
+    coverage_threshold: 0
+    notes:
+      - Verify no frontend implementation was changed unless explicitly authorized.
+  archive:
+    - Warn before merging destructive deltas into main specs.
+    - Preserve archived change folders as audit trail.
